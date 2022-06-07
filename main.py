@@ -15,11 +15,12 @@ class Ui(Ui_Form, QtWidgets.QDialog):
         self.comboBox.addItems(['整个列表', '选中范围'])
         self.comboBox_2.addItems(['正序', '倒序'])
         self.comboBox_3.addItems(['名称+序号', '仅序号', '自定义'])
+        self.pushButton_11.clicked.connect(lambda: self.stackedWidget_2.setCurrentIndex(0))  # “返回”按键的操作
         self.checkBox.clicked.connect(self.replace_delelate)
 
     def closeEvent(self, a0: QtGui.QCloseEvent):
         """关闭窗口时执行"""
-        self.close()
+        self.close()  # 必要代码
 
     def replace_delelate(self):
         """替换对话框与删除对话框的切换"""
