@@ -3,11 +3,13 @@
 
 from main_window import Ui_Form
 from PyQt5 import QtWidgets, QtCore, QtGui
+from FileList import *
 
 
 class Ui(Ui_Form, QtWidgets.QDialog):
     def __init__(self):
         super(Ui, self).__init__()
+        self.filelist = File_list()
 
     def setupUi(self, form):
         super(Ui, self).setupUi(form)
