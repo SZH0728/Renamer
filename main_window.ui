@@ -39,16 +39,6 @@
       <string/>
      </property>
     </widget>
-    <widget class="QListView" name="listView">
-     <property name="geometry">
-      <rect>
-       <x>10</x>
-       <y>10</y>
-       <width>381</width>
-       <height>561</height>
-      </rect>
-     </property>
-    </widget>
     <widget class="QWidget" name="horizontalLayoutWidget">
      <property name="geometry">
       <rect>
@@ -126,53 +116,27 @@
        <string>显示文件原名</string>
       </property>
      </widget>
-     <widget class="QRadioButton" name="radioButton">
-      <property name="geometry">
-       <rect>
-        <x>10</x>
-        <y>70</y>
-        <width>71</width>
-        <height>16</height>
-       </rect>
-      </property>
-      <property name="text">
-       <string>整个列表</string>
-      </property>
-     </widget>
-     <widget class="QRadioButton" name="radioButton_2">
-      <property name="geometry">
-       <rect>
-        <x>110</x>
-        <y>70</y>
-        <width>71</width>
-        <height>16</height>
-       </rect>
-      </property>
-      <property name="text">
-       <string>选中范围</string>
-      </property>
-     </widget>
      <widget class="QWidget" name="verticalLayoutWidget">
       <property name="geometry">
        <rect>
         <x>10</x>
-        <y>90</y>
+        <y>61</y>
         <width>171</width>
-        <height>112</height>
+        <height>141</height>
        </rect>
       </property>
       <layout class="QVBoxLayout" name="verticalLayout">
        <item>
-        <widget class="QPushButton" name="pushButton_7">
+        <widget class="QPushButton" name="pushButton_11">
          <property name="text">
-          <string>插入</string>
+          <string>添加文件</string>
          </property>
         </widget>
        </item>
        <item>
         <widget class="QPushButton" name="pushButton_8">
          <property name="text">
-          <string>删除</string>
+          <string>删除文件</string>
          </property>
         </widget>
        </item>
@@ -187,6 +151,13 @@
         <widget class="QPushButton" name="pushButton_10">
          <property name="text">
           <string>下移一格</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QPushButton" name="pushButton_7">
+         <property name="text">
+          <string>修改名称</string>
          </property>
         </widget>
        </item>
@@ -216,6 +187,19 @@
       </property>
       <property name="text">
        <string>删除模式</string>
+      </property>
+     </widget>
+     <widget class="QCheckBox" name="checkBox_2">
+      <property name="geometry">
+       <rect>
+        <x>100</x>
+        <y>20</y>
+        <width>71</width>
+        <height>16</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>使用正则</string>
       </property>
      </widget>
      <widget class="QStackedWidget" name="stackedWidget">
@@ -278,49 +262,43 @@
        </widget>
       </widget>
       <widget class="QWidget" name="page_2">
-       <widget class="QWidget" name="formLayoutWidget_3">
+       <widget class="QLabel" name="label_8">
         <property name="geometry">
          <rect>
           <x>0</x>
-          <y>0</y>
-          <width>171</width>
-          <height>91</height>
+          <y>10</y>
+          <width>36</width>
+          <height>21</height>
          </rect>
         </property>
-        <layout class="QFormLayout" name="formLayout_3">
-         <item row="1" column="0" colspan="2">
-          <widget class="QPushButton" name="pushButton_5">
-           <property name="text">
-            <string>预览</string>
-           </property>
-          </widget>
-         </item>
-         <item row="0" column="0">
-          <widget class="QLabel" name="label_8">
-           <property name="text">
-            <string>关键词</string>
-           </property>
-          </widget>
-         </item>
-         <item row="0" column="1">
-          <widget class="QTextEdit" name="textEdit_2"/>
-         </item>
-        </layout>
+        <property name="text">
+         <string>关键词</string>
+        </property>
+       </widget>
+       <widget class="QTextEdit" name="textEdit_2">
+        <property name="geometry">
+         <rect>
+          <x>40</x>
+          <y>0</y>
+          <width>131</width>
+          <height>51</height>
+         </rect>
+        </property>
+       </widget>
+       <widget class="QPushButton" name="pushButton_5">
+        <property name="geometry">
+         <rect>
+          <x>0</x>
+          <y>60</y>
+          <width>171</width>
+          <height>23</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>预览</string>
+        </property>
        </widget>
       </widget>
-     </widget>
-     <widget class="QCheckBox" name="checkBox_2">
-      <property name="geometry">
-       <rect>
-        <x>100</x>
-        <y>20</y>
-        <width>71</width>
-        <height>16</height>
-       </rect>
-      </property>
-      <property name="text">
-       <string>使用正则</string>
-      </property>
      </widget>
     </widget>
     <widget class="QGroupBox" name="groupBox_3">
@@ -395,62 +373,14 @@
       </layout>
      </widget>
     </widget>
-   </widget>
-   <widget class="QWidget" name="page_4">
-    <widget class="QLabel" name="label_9">
+    <widget class="QListWidget" name="listWidget">
      <property name="geometry">
       <rect>
        <x>10</x>
        <y>10</y>
-       <width>581</width>
-       <height>51</height>
+       <width>381</width>
+       <height>561</height>
       </rect>
-     </property>
-     <property name="font">
-      <font>
-       <pointsize>50</pointsize>
-       <weight>75</weight>
-       <italic>true</italic>
-       <bold>true</bold>
-      </font>
-     </property>
-     <property name="acceptDrops">
-      <bool>false</bool>
-     </property>
-     <property name="layoutDirection">
-      <enum>Qt::LeftToRight</enum>
-     </property>
-     <property name="text">
-      <string>Renamer</string>
-     </property>
-     <property name="alignment">
-      <set>Qt::AlignCenter</set>
-     </property>
-    </widget>
-    <widget class="QPushButton" name="pushButton_11">
-     <property name="geometry">
-      <rect>
-       <x>520</x>
-       <y>570</y>
-       <width>75</width>
-       <height>23</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string>返回</string>
-     </property>
-    </widget>
-    <widget class="QLabel" name="label_10">
-     <property name="geometry">
-      <rect>
-       <x>10</x>
-       <y>70</y>
-       <width>581</width>
-       <height>491</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string/>
      </property>
     </widget>
    </widget>
@@ -458,13 +388,10 @@
  </widget>
  <tabstops>
   <tabstop>pushButton_6</tabstop>
-  <tabstop>listView</tabstop>
   <tabstop>pushButton_2</tabstop>
   <tabstop>checkBox_3</tabstop>
   <tabstop>pushButton</tabstop>
   <tabstop>checkBox_4</tabstop>
-  <tabstop>radioButton</tabstop>
-  <tabstop>radioButton_2</tabstop>
   <tabstop>checkBox</tabstop>
   <tabstop>checkBox_2</tabstop>
   <tabstop>comboBox</tabstop>
@@ -472,15 +399,12 @@
   <tabstop>comboBox_3</tabstop>
   <tabstop>textEdit</tabstop>
   <tabstop>pushButton_3</tabstop>
-  <tabstop>pushButton_7</tabstop>
   <tabstop>pushButton_8</tabstop>
   <tabstop>pushButton_9</tabstop>
   <tabstop>pushButton_10</tabstop>
   <tabstop>pushButton_4</tabstop>
   <tabstop>lineEdit</tabstop>
   <tabstop>lineEdit_2</tabstop>
-  <tabstop>pushButton_5</tabstop>
-  <tabstop>textEdit_2</tabstop>
  </tabstops>
  <resources/>
  <connections/>
