@@ -6,9 +6,9 @@ from os.path import isdir, join
 
 def get_files(path: str):
     """
-
-    :param path:
-    :return:
+    获取指定目录下的文件(不包括子文件夹中文件)
+    :param path: 指定目录
+    :return: 文件列表
     """
     r = []
     for i in listdir(path):
@@ -20,9 +20,9 @@ def get_files(path: str):
 
 def get_files_deep(path: str):
     """
-
-    :param path:
-    :return:
+    获取指定目录下的文件(包括子文件夹中文件)
+    :param path: 指定目录
+    :return: 文件列表
     """
     r = []
     for paths, dirs, files in walk(path):

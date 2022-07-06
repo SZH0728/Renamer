@@ -6,16 +6,15 @@ from error import IdOutOfLength
 class FileId(object):
     def __init__(self, length: int):
         """
-
-        :param length:
+        :param length: id长度
         """
         self.number = 0
         self.length = length
 
     def get(self):
         """
-
-        :return:
+        获取下一个id
+        :return: 下一个id
         """
         self.number += 1
         if len(str(self.number)) <= self.length:
@@ -25,7 +24,7 @@ class FileId(object):
 
     def clear(self):
         """
-
+        清空id
         """
         self.number = 0
 
