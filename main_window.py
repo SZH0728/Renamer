@@ -15,6 +15,9 @@ class Ui_Form(object):
     def setupUi(self, Form):
         Form.setObjectName("Form")
         Form.resize(600, 600)
+        icon = QtGui.QIcon()
+        icon.addPixmap(QtGui.QPixmap(":/ico/Renamer.ico"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        Form.setWindowIcon(icon)
         self.stackedWidget_2 = QtWidgets.QStackedWidget(Form)
         self.stackedWidget_2.setGeometry(QtCore.QRect(0, 0, 600, 600))
         self.stackedWidget_2.setObjectName("stackedWidget_2")
@@ -127,7 +130,7 @@ class Ui_Form(object):
         self.groupBox_3.setGeometry(QtCore.QRect(400, 370, 191, 191))
         self.groupBox_3.setObjectName("groupBox_3")
         self.formLayoutWidget = QtWidgets.QWidget(self.groupBox_3)
-        self.formLayoutWidget.setGeometry(QtCore.QRect(10, 20, 171, 171))
+        self.formLayoutWidget.setGeometry(QtCore.QRect(10, 20, 171, 161))
         self.formLayoutWidget.setObjectName("formLayoutWidget")
         self.formLayout = QtWidgets.QFormLayout(self.formLayoutWidget)
         self.formLayout.setContentsMargins(0, 0, 0, 0)
@@ -214,3 +217,4 @@ class Ui_Form(object):
         self.label_5.setText(_translate("Form", "格式"))
         self.label_4.setText(_translate("Form", "内容"))
         self.pushButton_3.setText(_translate("Form", "预览"))
+import ico_rc

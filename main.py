@@ -149,6 +149,7 @@ class Ui(Ui_Form, QtWidgets.QDialog):
             if flag == QtWidgets.QMessageBox.Yes:
                 self.listWidget.clear()
                 self.filelist = FileList()
+                self.label.setText('本软件已开源于GitHub\n详情请访问 https://github.com/zhehao0728/Renamer')
 
     def addfiles(self):
         """添加文件"""
@@ -229,6 +230,7 @@ class Ui(Ui_Form, QtWidgets.QDialog):
         elif self.comboBox_3.currentIndex() == 2:
             for index, i in enumerate(ran):
                 text = self.textEdit.toPlainText()
+                index += 1
                 while r'{index}' in text:
                     text = text.replace(r'{index}', str(index))
                 i.setText(text)
@@ -240,12 +242,16 @@ class Ui(Ui_Form, QtWidgets.QDialog):
         self.checkBox_4.setChecked(False)
         flag = QtWidgets.QMessageBox.question(self, '重命名', '确定重命名？')
         if flag == QtWidgets.QMessageBox.Yes:
-            self.filelist.rename()
-            dic = self.filelist.path_list
-            for i in range(self.listWidget.count()):
-                item = self.listWidget.item(i)
-                item.setToolTip(dic[item.whatsThis()])
-        QtWidgets.QMessageBox.information(self, '重命名', '文件重命名成功！')
+            try:
+                self.filelist.rename()
+            except BaseException as e:
+                QtWidgets.QMessageBox.critical(self, '重命名失败', '重命名失败,因为\n'+str(e))
+            else:
+                dic = self.filelist.path_list
+                for i in range(self.listWidget.count()):
+                    item = self.listWidget.item(i)
+                    item.setToolTip(dic[item.whatsThis()])
+                QtWidgets.QMessageBox.information(self, '重命名', '文件重命名成功！')
 
 
 if __name__ == '__main__':

@@ -4,6 +4,7 @@ from re import sub, findall
 from os.path import split, join
 from os import rename
 from fileid import FileId
+from copy import copy
 
 
 class FileListItem(object):
@@ -117,7 +118,7 @@ class FileList(object):
         """
         dic = {}
         for i in order:
-            dic[i] = self.files[i]
+            dic[i] = copy(self.files[i])
         self.history.append(dic)
 
     def find_by_name(self, name: str):
