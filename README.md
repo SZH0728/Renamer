@@ -1,6 +1,7 @@
 # Renamer
 文件批量重命名程序(基于PyQt5)  
-exe文件获取方式在最后
+exe文件获取方式在最后  
+当前最新版本：1.0.1  
 
 ### 使用说明
 * 关于列表  
@@ -18,10 +19,23 @@ exe文件获取方式在最后
 ### 软件截图
 ![软件截图](https://i0.hdslb.com/bfs/new_dyn/6f604ac1dc87addb16eb2a665de26645631481639.png@1036w.webp)
 
-### exe文件获取
-[百度网盘](https://pan.baidu.com/s/1ejn1vNeglUXQR9cKhFtnHg?pwd=p9jk)
-提取码：p9jk  
-[阿里云盘](https://www.aliyundrive.com/s/B1bp1WpJfE1)
+### 最新版本获取
+[百度网盘](https://pan.baidu.com/s/1V6Sfm603a4BGXB_uNhAgHg?pwd=5kaf)   
+[阿里云盘](https://www.aliyundrive.com/s/orMeWJKDN4g)
+
+### 历史版本
+**1.0.1**  
+`新增`  
+自动补全功能(位于 按序->格式)  
+`修复`  
+无法重命名的问题  
+[百度网盘](https://pan.baidu.com/s/1V6Sfm603a4BGXB_uNhAgHg?pwd=5kaf)   
+[阿里云盘](https://www.aliyundrive.com/s/orMeWJKDN4g)
+
+**1.0.0**  
+第一个版本  
+[百度网盘](https://pan.baidu.com/s/1ejn1vNeglUXQR9cKhFtnHg?pwd=p9jk)  
+[阿里云盘](https://www.aliyundrive.com/s/B1bp1WpJfE1)  
 
 ### 写在最后
 **如果喜欢就点一下`Star`吧**

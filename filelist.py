@@ -58,7 +58,7 @@ class FileList(object):
     def __init__(self):
         self.files = {}
         self.history = []
-        self.fileid = FileId(4)
+        self.fileid = FileId(6)
 
     @property
     def name_list(self):
@@ -166,7 +166,7 @@ class FileList(object):
         """
         重命名
         """
-        for i in self.files:
+        for i in self.files.values():
             i.rename()
 
 

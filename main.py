@@ -6,6 +6,9 @@ from PyQt5 import QtWidgets, QtCore, QtGui
 from filelist import FileList
 from fileget import *
 
+__verson__ = '1.0.0'
+# pyinstaller -F -w -i Renamer.ico main.py
+
 
 class Ui(Ui_Form, QtWidgets.QDialog):
     def __init__(self):
@@ -18,7 +21,7 @@ class Ui(Ui_Form, QtWidgets.QDialog):
         self.listWidget.setSelectionMode(QtWidgets.QAbstractItemView.ExtendedSelection)
         self.comboBox.addItems(['整个列表', '选中范围'])
         self.comboBox_2.addItems(['正序', '倒序'])
-        self.comboBox_3.addItems(['名称+序号', '仅序号', '自定义'])
+        self.comboBox_3.addItems(['名称+序号', '名称+序号(自动补全)', '仅序号', '仅序号(自动补全)', '自定义'])
         self.checkBox.clicked.connect(self.replace_delelate)
         self.pushButton_6.clicked.connect(self.add_files)
         self.listWidget.clicked.connect(self.list_click)
@@ -216,6 +219,7 @@ class Ui(Ui_Form, QtWidgets.QDialog):
         elif self.comboBox_2.currentIndex() == 1:
             ran.reverse()
 
+        length = len(str(len(ran)))
         if self.comboBox_3.currentIndex() == 0:
             for index, i in enumerate(ran):
                 text = self.textEdit.toPlainText()
@@ -224,10 +228,25 @@ class Ui(Ui_Form, QtWidgets.QDialog):
                 event.name = text+str(index+1)
         elif self.comboBox_3.currentIndex() == 1:
             for index, i in enumerate(ran):
+                index += 1
+                index = '0'*(length - len(str(index))) + str(index)
+                text = self.textEdit.toPlainText()
+                i.setText(text + index)
+                event = self.filelist.find_by_id(i.whatsThis())
+                event.name = text + index
+        elif self.comboBox_3.currentIndex() == 2:
+            for index, i in enumerate(ran):
                 i.setText(str(index+1))
                 event = self.filelist.find_by_id(i.whatsThis())
                 event.name = str(index+1)
         elif self.comboBox_3.currentIndex() == 2:
+            for index, i in enumerate(ran):
+                index += 1
+                index = '0' * (length - len(str(index))) + str(index)
+                i.setText(index)
+                event = self.filelist.find_by_id(i.whatsThis())
+                event.name = index
+        elif self.comboBox_3.currentIndex() == 4:
             for index, i in enumerate(ran):
                 text = self.textEdit.toPlainText()
                 index += 1
