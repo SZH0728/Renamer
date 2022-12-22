@@ -2,106 +2,102 @@
 # AUTHOR: SUN
 
 from main_window import Ui_Form
-from PyQt5 import QtWidgets, QtCore, QtGui
+from PyQt5 import QtWidgets, QtCore
 from filelist import FileList
-from fileget import *
+from os import listdir, walk
+from os.path import isdir, join, split
+from Wapi import *
+from re import match
 
-__verson__ = '1.0.0'
-# pyinstaller -F -w -i Renamer.ico main.py
+
+__verson__ = '1.1.0Beta'
 
 
-class Ui(Ui_Form, QtWidgets.QDialog):
+class main(Ui_Form, QtWidgets.QMainWindow):
     def __init__(self):
-        super(Ui, self).__init__()
+        super(main, self).__init__()
         self.filelist = FileList()
+        self.window = ''
 
     def setupUi(self, form):
-        super(Ui, self).setupUi(form)
-        self.label.setText('本软件已开源于GitHub\n详情请访问 https://github.com/zhehao0728/Renamer')
+        super(main, self).setupUi(form)
         self.listWidget.setSelectionMode(QtWidgets.QAbstractItemView.ExtendedSelection)
-        self.comboBox.addItems(['整个列表', '选中范围'])
-        self.comboBox_2.addItems(['正序', '倒序'])
-        self.comboBox_3.addItems(['名称+序号', '名称+序号(自动补全)', '仅序号', '仅序号(自动补全)', '自定义'])
-        self.checkBox.clicked.connect(self.replace_delelate)
-        self.pushButton_6.clicked.connect(self.add_files)
-        self.listWidget.clicked.connect(self.list_click)
+        self.listWidget.currentItemChanged.connect(self.item_click)
         self.listWidget.doubleClicked.connect(self.change_single_name)
-        self.pushButton_7.clicked.connect(self.change_single_name)
-        self.checkBox_4.clicked.connect(self.show_origin_name)
-        self.pushButton_9.clicked.connect(self.move_up)
-        self.pushButton_10.clicked.connect(self.move_down)
-        self.pushButton_8.clicked.connect(self.delete)
-        self.pushButton_11.clicked.connect(self.addfiles)
-        self.pushButton_5.clicked.connect(self.delect_word)
-        self.pushButton_4.clicked.connect(self.replace_word)
-        self.pushButton.clicked.connect(self.roll_back)
-        self.pushButton_2.clicked.connect(self.rename)
-        self.pushButton_3.clicked.connect(self.roll_rename)
+        self.tableWidget.setEditTriggers(QtWidgets.QAbstractItemView.NoEditTriggers)
+        self.tableWidget.resizeRowsToContents()
+        self.tableWidget.resizeColumnsToContents()
+        self.tableWidget.setAlternatingRowColors(True)
+        self.tableWidget.setColumnCount(3)
+        self.tableWidget.setHorizontalHeaderLabels(['路径', '原名称', '目标名称'])
+        self.tableWidget.horizontalHeader().setSectionResizeMode(QtWidgets.QHeaderView.Stretch)
+        self.lineEdit.setPlaceholderText('文件位置会出现在这里')
+        self.lineEdit.setFocusPolicy(QtCore.Qt.NoFocus)
+        self.pushButton.clicked.connect(self.confirm)
+        self.pushButton_2.clicked.connect(self.roll_back)
+        self.pushButton_3.clicked.connect(self.adddir)
+        self.pushButton_4.clicked.connect(self.addfile)
+        self.pushButton_5.clicked.connect(self.move_up)
+        self.pushButton_6.clicked.connect(self.move_down)
+        self.pushButton_7.clicked.connect(self.delete)
+        self.pushButton_8.clicked.connect(self.clear)
+        self.pushButton_9.clicked.connect(self.present_origin)
+        self.pushButton_10.clicked.connect(self.filtrate)
+        self.pushButton_11.clicked.connect(self.rebound)
+        self.pushButton_12.clicked.connect(self.rename)
+        self.pushButton_13.clicked.connect(lambda: self.stackedWidget.setCurrentIndex(0))
 
-    def closeEvent(self, a0: QtGui.QCloseEvent):
-        """关闭窗口时执行"""
-        self.close()  # 必要代码
-
-    def save(self):
-        """保存历史记录"""
-        al = []
-        for i in range(self.listWidget.count()):
-            i = self.listWidget.item(i)
-            al.append(i.whatsThis())
-        self.filelist.save(al)
-
-    def replace_delelate(self):
-        """替换对话框与删除对话框的切换"""
-        if self.checkBox.isChecked():
-            self.stackedWidget.setCurrentIndex(1)
-        else:
-            self.stackedWidget.setCurrentIndex(0)
-
-    def add_files(self):
-        """向列表中添加文件"""
-        self.save()
-        self.checkBox_4.setChecked(False)
+    def adddir(self):
+        self.filelist.save()
+        self.present_origin(True)
         path = QtWidgets.QFileDialog.getExistingDirectory(self, '请选择一个目录')
         if path != '':
-            if self.checkBox_3.isChecked():
-                files = get_files_deep(path)
+            if self.checkBox.isChecked():
+                files = []
+                for paths, dirs, file in walk(path):
+                    for i in file:
+                        files.append(join(paths, i))
             else:
-                files = get_files(path)
-            files = self.filelist.add(files)
-            for key, value in files.items():
+                files = []
+                for i in listdir(path):
+                    i = join(path, i)
+                    if not isdir(i):
+                        files.append(i)
+            exist = []
+            for i in self.filelist.Id_Item.values():
+                exist.append(i.id)
+            exist = set(exist)
+            files = set(files)
+            files = files.difference(exist)
+            for i in list(files):
+                if '$' in i:
+                    continue
+                file = self.filelist.new(i)
                 item = QtWidgets.QListWidgetItem()
-                item.setText(value.name)
-                item.setWhatsThis(key)
-                item.setToolTip(value.origin)
+                item.setText(file.name+file.suffix)
+                item.setToolTip(file.origin)
+                item.setWhatsThis(file.id)
                 self.listWidget.addItem(item)
 
-    def list_click(self):
-        """文件列表中项的点击操作"""
-        self.label.setText(self.listWidget.currentItem().toolTip())
-
-    def change_single_name(self):
-        """更改单个文件名称"""
-        self.save()
-        self.checkBox_4.setChecked(False)
-        text, flag = QtWidgets.QInputDialog.getText(self, '名称修改', '请输入新名称',
-                                                    QtWidgets.QLineEdit.Normal, self.listWidget.currentItem().text())
-        if flag:
-            self.filelist.find_by_id(self.listWidget.currentItem().whatsThis()).name = text
-            self.listWidget.currentItem().setText(
-                self.filelist.find_by_id(self.listWidget.currentItem().whatsThis()).name)
-
-    def show_origin_name(self):
-        """展示原名称"""
-        if self.checkBox_4.isChecked():
-            names = self.filelist.origin_list
-            for i in range(self.listWidget.count()):
-                i = self.listWidget.item(i)
-                i.setText(names[i.whatsThis()])
-        else:
-            names = self.filelist.name_list
-            for i in range(self.listWidget.count()):
-                i = self.listWidget.item(i)
-                i.setText(names[i.whatsThis()])
+    def addfile(self):
+        self.filelist.save()
+        self.present_origin(True)
+        files = QtWidgets.QFileDialog.getOpenFileNames(self, '选择多个文件')[0]
+        exist = []
+        for i in self.filelist.Id_Item.values():
+            exist.append(i.id)
+        exist = set(exist)
+        files = set(files)
+        files = files.difference(exist)
+        for i in list(files):
+            if '$' in i:
+                continue
+            file = self.filelist.new(i)
+            item = QtWidgets.QListWidgetItem()
+            item.setText(file.name + file.suffix)
+            item.setToolTip(file.origin)
+            item.setWhatsThis(file.id)
+            self.listWidget.addItem(item)
 
     def move_up(self):
         """上移一格"""
@@ -135,149 +131,137 @@ class Ui(Ui_Form, QtWidgets.QDialog):
             QtWidgets.QMessageBox.critical(self, '错误', '已经到底了！')
 
     def delete(self):
-        """删除文件"""
-        self.save()
-        self.checkBox_4.setChecked(False)
+        self.filelist.save()
         num = 0
-        files = []
         for i in range(self.listWidget.count()):
-            item = self.listWidget.item(i - num)
+            item = self.listWidget.item(i-num)
             if item.isSelected():
-                self.listWidget.takeItem(i - num)
-                files.append(item.whatsThis())
+                self.filelist.delete(item.whatsThis())
+                self.listWidget.takeItem(i-num)
                 num += 1
-        self.filelist.delete(files)
-        if len(files) == 0:
-            flag = QtWidgets.QMessageBox.question(self, '无选择内容', '您没有选择任何需要删除的对象\n是否清空整个列表？(注：这会同时清除历史记录)', )
-            if flag == QtWidgets.QMessageBox.Yes:
-                self.listWidget.clear()
-                self.filelist = FileList()
-                self.label.setText('本软件已开源于GitHub\n详情请访问 https://github.com/zhehao0728/Renamer')
 
-    def addfiles(self):
-        """添加文件"""
-        self.save()
-        self.checkBox_4.setChecked(False)
-        files, filetype = QtWidgets.QFileDialog.getOpenFileNames(self, "选择多个文件")
-        add = self.filelist.add(files)
-        for key, value in add.items():
-            item = QtWidgets.QListWidgetItem()
-            item.setText(value.name)
-            item.setWhatsThis(key)
-            item.setToolTip(value.origin)
-            self.listWidget.addItem(item)
-
-    def replace_word(self):
-        """替换关键词"""
-        self.save()
-        self.checkBox_4.setChecked(False)
-        self.filelist.replace(self.lineEdit.text(), self.lineEdit_2.text(), self.checkBox_2.isChecked())
-        dic = self.filelist.name_list
-        for i in range(self.listWidget.count()):
-            item = self.listWidget.item(i)
-            item.setText(dic[item.whatsThis()])
-
-    def delect_word(self):
-        """删除关键词"""
-        self.save()
-        self.checkBox_4.setChecked(False)
-        self.filelist.replace(self.textEdit_2.toPlainText(), '', self.checkBox_2.isChecked())
-        dic = self.filelist.name_list
-        for i in range(self.listWidget.count()):
-            item = self.listWidget.item(i)
-            item.setText(dic[item.whatsThis()])
-
-    def roll_back(self):
-        """撤销"""
-        self.checkBox_4.setChecked(False)
-        files = self.filelist.roll_back()
+    def clear(self):
         self.listWidget.clear()
-        for key, value in files.items():
-            item = QtWidgets.QListWidgetItem()
-            item.setText(value.name)
-            item.setWhatsThis(key)
-            item.setToolTip(value.origin)
-            self.listWidget.addItem(item)
+        self.filelist.save()
+        self.filelist.clear()
+        self.pushButton_9.setText('原名称')
+        self.lineEdit.clear()
 
-    def roll_rename(self):
-        """按序命名"""
-        self.save()
-        self.checkBox_4.setChecked(False)
+    def change_single_name(self):
+        self.filelist.save()
+        wightitem = self.listWidget.currentItem()
+        item = self.filelist.Id_Item[wightitem.whatsThis()]
+        self.window = single.main(item, wightitem)
+        self.window.show()
 
-        ran = []
-        if self.comboBox.currentIndex() == 0:
-            for i in range(self.listWidget.count()):
-                ran.append(self.listWidget.item(i))
-        elif self.comboBox.currentIndex() == 1:
-            for i in range(self.listWidget.count()):
-                item = self.listWidget.item(i)
-                if item.isSelected():
-                    ran.append(item)
+    def item_click(self):
+        item = self.listWidget.currentItem()
+        if item is not None:
+            text = self.filelist.Id_Origin[item.whatsThis()]
+            if '\\' in text:
+                text = text.replace('\\', '/')
+            if '//' in text:
+                text = text.replace('//', '/')
+            self.lineEdit.setText(text)
 
-        if self.comboBox_2.currentIndex() == 0:
-            pass
-        elif self.comboBox_2.currentIndex() == 1:
-            ran.reverse()
-
-        length = len(str(len(ran)))
-        if self.comboBox_3.currentIndex() == 0:
-            for index, i in enumerate(ran):
-                text = self.textEdit.toPlainText()
-                i.setText(text+str(index+1))
-                event = self.filelist.find_by_id(i.whatsThis())
-                event.name = text+str(index+1)
-        elif self.comboBox_3.currentIndex() == 1:
-            for index, i in enumerate(ran):
-                index += 1
-                index = '0'*(length - len(str(index))) + str(index)
-                text = self.textEdit.toPlainText()
-                i.setText(text + index)
-                event = self.filelist.find_by_id(i.whatsThis())
-                event.name = text + index
-        elif self.comboBox_3.currentIndex() == 2:
-            for index, i in enumerate(ran):
-                i.setText(str(index+1))
-                event = self.filelist.find_by_id(i.whatsThis())
-                event.name = str(index+1)
-        elif self.comboBox_3.currentIndex() == 2:
-            for index, i in enumerate(ran):
-                index += 1
-                index = '0' * (length - len(str(index))) + str(index)
-                i.setText(index)
-                event = self.filelist.find_by_id(i.whatsThis())
-                event.name = index
-        elif self.comboBox_3.currentIndex() == 4:
-            for index, i in enumerate(ran):
-                text = self.textEdit.toPlainText()
-                index += 1
-                while r'{index}' in text:
-                    text = text.replace(r'{index}', str(index))
-                i.setText(text)
-                event = self.filelist.find_by_id(i.whatsThis())
-                event.name = text
-
-    def rename(self):
-        """重命名"""
-        self.checkBox_4.setChecked(False)
-        flag = QtWidgets.QMessageBox.question(self, '重命名', '确定重命名？')
-        if flag == QtWidgets.QMessageBox.Yes:
-            try:
-                self.filelist.rename()
-            except BaseException as e:
-                QtWidgets.QMessageBox.critical(self, '重命名失败', '重命名失败,因为\n'+str(e))
-            else:
-                dic = self.filelist.path_list
+    def present_origin(self, origin=False):
+        if origin:
+            if self.pushButton_9.text() == '现名称':
                 for i in range(self.listWidget.count()):
                     item = self.listWidget.item(i)
-                    item.setToolTip(dic[item.whatsThis()])
-                QtWidgets.QMessageBox.information(self, '重命名', '文件重命名成功！')
+                    name = self.filelist.Id_Item[item.whatsThis()]
+                    name = name.name + name.suffix
+                    item.setText(name)
+                self.pushButton_9.setText('原名称')
+        else:
+            if self.pushButton_9.text() == '原名称':
+                for i in range(self.listWidget.count()):
+                    item = self.listWidget.item(i)
+                    name = split(self.filelist.Id_Origin[item.whatsThis()])[1]
+                    item.setText(name)
+                self.pushButton_9.setText('现名称')
+            elif self.pushButton_9.text() == '现名称':
+                for i in range(self.listWidget.count()):
+                    item = self.listWidget.item(i)
+                    name = self.filelist.Id_Item[item.whatsThis()]
+                    name = name.name + name.suffix
+                    item.setText(name)
+                self.pushButton_9.setText('原名称')
+
+    def roll_back(self):
+        self.listWidget.clear()
+        self.filelist.rollback()
+        for i in self.filelist.Id_Item.values():
+            item = QtWidgets.QListWidgetItem()
+            item.setText(i.name+i.suffix)
+            item.setToolTip(i.origin)
+            item.setWhatsThis(i.id)
+            self.listWidget.addItem(item)
+        self.lineEdit.clear()
+
+    def confirm(self):
+        self.tableWidget.setRowCount(len(self.filelist.Id_Item))
+        for index, i in enumerate(list(self.filelist.Id_Item.values())):
+            text1 = i.path
+            text2 = i.name+i.suffix
+            text3 = split(i.origin)[1]
+            if '\\' in text1:
+                text1 = text1.replace('\\', '/')
+            if '//' in text1:
+                text1 = text1.replace('//', '/')
+            item1 = QtWidgets.QTableWidgetItem(text1)
+            item1.setToolTip(text1)
+            item2 = QtWidgets.QTableWidgetItem(text2)
+            item2.setToolTip(text2)
+            item3 = QtWidgets.QTableWidgetItem(text3)
+            item3.setToolTip(text3)
+            self.tableWidget.setItem(index, 0, item1)
+            self.tableWidget.setItem(index, 1, item2)
+            self.tableWidget.setItem(index, 2, item3)
+        self.stackedWidget.setCurrentIndex(1)
+
+    def rebound(self):
+        for i in range(self.listWidget.count()):
+            item = self.listWidget.item(i)
+            item.setHidden(False)
+
+    def filtrate(self):
+        type_ = self.comboBox_2.currentIndex()
+        re = self.checkBox_2.isChecked()
+        select = self.checkBox_3.isChecked()
+        way = self.lineEdit_2.text()
+        for i in range(self.listWidget.count()):
+            item = self.listWidget.item(i)
+            if item.isSelected() and select:
+                continue
+            file = self.filelist.Id_Item[item.whatsThis()]
+            text = ''
+            if type_ == 0:
+                text = file.name
+            elif type_ == 1:
+                text = file.suffix
+            elif type_ == 2:
+                text = file.name+file.suffix
+            if re:
+                if match(way, text) is None:
+                    item.setHidden(True)
+            else:
+                if way not in text:
+                    item.setHidden(True)
+
+    def rename(self):
+        try:
+            self.filelist.rename()
+        except BaseException as e:
+            QtWidgets.QMessageBox.critical(self, '错误', '无法重命名，因为\n'+str(e))
+        else:
+            QtWidgets.QMessageBox.information(self, '成功', '重命名成功！')
 
 
 if __name__ == '__main__':
     import sys
     app = QtWidgets.QApplication(sys.argv)
-    MainWindow = Ui()
-    MainWindow.setWindowFlags(QtCore.Qt.MSWindowsFixedSizeDialogHint)
-    MainWindow.setupUi(MainWindow)
-    MainWindow.show()
+    ui = main()
+    ui.setupUi(ui)
+    ui.show()
     sys.exit(app.exec_())
