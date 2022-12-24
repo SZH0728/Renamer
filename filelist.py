@@ -1,8 +1,9 @@
 # -*- coding:utf-8 -*-
 # AUTHOR: SUN
-from os.path import split, join
-from os import rename
 from copy import copy
+from os.path import split
+
+from Wapi.process import main
 
 
 class FileId(object):
@@ -42,11 +43,8 @@ class FileList(object):
         return self.Id_Item[id_]
 
     def rename(self):
-        for key, value in self.Id_Item.values():
-            path = join(value.path, value.name+value.suffix)
-            rename(value.origin, path)
-            self.Id_Origin[key] = path
-            value.origin = path
+        window = main(self)
+        window.exec_()
 
     def delete(self, id_):
         del self.Id_Item[id_]
@@ -58,10 +56,14 @@ class FileList(object):
         self.history.append(dic)
 
     def rollback(self):
-        dic = self.history.pop()
-        self.Id_Item.clear()
-        for key, value in dic.items():
-            self.Id_Item[key] = FileListItem(value, key)
+        try:
+            dic = self.history.pop()
+        except IndexError:
+            self.Id_Item = []
+        else:
+            self.Id_Item.clear()
+            for key, value in dic.items():
+                self.Id_Item[key] = FileListItem(value, key)
 
     def clear(self):
         self.Id_Item.clear()

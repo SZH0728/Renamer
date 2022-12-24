@@ -18,6 +18,10 @@
   <property name="windowTitle">
    <string>Renamer</string>
   </property>
+  <property name="windowIcon">
+   <iconset resource="icons.qrc">
+    <normaloff>:/logo/Renamer.ico</normaloff>:/logo/Renamer.ico</iconset>
+  </property>
   <widget class="QStackedWidget" name="stackedWidget">
    <property name="geometry">
     <rect>
@@ -58,12 +62,16 @@
        <rect>
         <x>10</x>
         <y>20</y>
-        <width>65</width>
+        <width>71</width>
         <height>25</height>
        </rect>
       </property>
       <property name="text">
        <string>文件夹</string>
+      </property>
+      <property name="icon">
+       <iconset resource="icons.qrc">
+        <normaloff>:/icon/icon/folder-plus.png</normaloff>:/icon/icon/folder-plus.png</iconset>
       </property>
      </widget>
      <widget class="QPushButton" name="pushButton_4">
@@ -78,11 +86,15 @@
       <property name="text">
        <string>文件</string>
       </property>
+      <property name="icon">
+       <iconset resource="icons.qrc">
+        <normaloff>:/icon/icon/file-addition-one.png</normaloff>:/icon/icon/file-addition-one.png</iconset>
+      </property>
      </widget>
      <widget class="QCheckBox" name="checkBox">
       <property name="geometry">
        <rect>
-        <x>80</x>
+        <x>90</x>
         <y>20</y>
         <width>81</width>
         <height>21</height>
@@ -104,6 +116,10 @@
       <property name="text">
        <string>上移</string>
       </property>
+      <property name="icon">
+       <iconset resource="icons.qrc">
+        <normaloff>:/icon/icon/arrow-up.png</normaloff>:/icon/icon/arrow-up.png</iconset>
+      </property>
      </widget>
      <widget class="QPushButton" name="pushButton_6">
       <property name="geometry">
@@ -116,6 +132,10 @@
       </property>
       <property name="text">
        <string>下移</string>
+      </property>
+      <property name="icon">
+       <iconset resource="icons.qrc">
+        <normaloff>:/icon/icon/arrow-down.png</normaloff>:/icon/icon/arrow-down.png</iconset>
       </property>
      </widget>
      <widget class="QPushButton" name="pushButton_7">
@@ -130,6 +150,10 @@
       <property name="text">
        <string>从列表中删除</string>
       </property>
+      <property name="icon">
+       <iconset resource="icons.qrc">
+        <normaloff>:/icon/icon/delete-key.png</normaloff>:/icon/icon/delete-key.png</iconset>
+      </property>
      </widget>
      <widget class="QPushButton" name="pushButton_8">
       <property name="geometry">
@@ -143,6 +167,10 @@
       <property name="text">
        <string>清空列表</string>
       </property>
+      <property name="icon">
+       <iconset resource="icons.qrc">
+        <normaloff>:/icon/icon/delete.png</normaloff>:/icon/icon/delete.png</iconset>
+      </property>
      </widget>
      <widget class="QPushButton" name="pushButton_9">
       <property name="geometry">
@@ -155,6 +183,10 @@
       </property>
       <property name="text">
        <string>原名称</string>
+      </property>
+      <property name="icon">
+       <iconset resource="icons.qrc">
+        <normaloff>:/icon/icon/return.png</normaloff>:/icon/icon/return.png</iconset>
       </property>
      </widget>
     </widget>
@@ -170,6 +202,10 @@
      <property name="text">
       <string>确认</string>
      </property>
+     <property name="icon">
+      <iconset resource="icons.qrc">
+       <normaloff>:/icon/icon/check-correct.png</normaloff>:/icon/icon/check-correct.png</iconset>
+     </property>
     </widget>
     <widget class="QPushButton" name="pushButton_2">
      <property name="geometry">
@@ -182,6 +218,10 @@
      </property>
      <property name="text">
       <string>撤销</string>
+     </property>
+     <property name="icon">
+      <iconset resource="icons.qrc">
+       <normaloff>:/icon/icon/undo.png</normaloff>:/icon/icon/undo.png</iconset>
      </property>
     </widget>
     <widget class="QLineEdit" name="lineEdit">
@@ -306,6 +346,19 @@
      <property name="title">
       <string/>
      </property>
+     <widget class="QStackedWidget" name="stackedWidget_2">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>20</y>
+        <width>151</width>
+        <height>331</height>
+       </rect>
+      </property>
+      <property name="currentIndex">
+       <number>-1</number>
+      </property>
+     </widget>
     </widget>
     <widget class="QComboBox" name="comboBox">
      <property name="geometry">
@@ -354,6 +407,10 @@
      <property name="text">
       <string>确认</string>
      </property>
+     <property name="icon">
+      <iconset resource="icons.qrc">
+       <normaloff>:/icon/icon/check-correct.png</normaloff>:/icon/icon/check-correct.png</iconset>
+     </property>
     </widget>
     <widget class="QPushButton" name="pushButton_13">
      <property name="geometry">
@@ -367,10 +424,16 @@
      <property name="text">
       <string>取消</string>
      </property>
+     <property name="icon">
+      <iconset resource="icons.qrc">
+       <normaloff>:/icon/icon/return.png</normaloff>:/icon/icon/return.png</iconset>
+     </property>
     </widget>
    </widget>
   </widget>
  </widget>
- <resources/>
+ <resources>
+  <include location="icons.qrc"/>
+ </resources>
  <connections/>
 </ui>

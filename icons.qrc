@@ -1,0 +1,17 @@
+<RCC>
+  <qresource prefix="icon">
+    <file>icon/file-editing-one.png</file>
+    <file>icon/check-correct.png</file>
+    <file>icon/undo.png</file>
+    <file>icon/arrow-down.png</file>
+    <file>icon/arrow-up.png</file>
+    <file>icon/delete.png</file>
+    <file>icon/delete-key.png</file>
+    <file>icon/file-addition-one.png</file>
+    <file>icon/folder-plus.png</file>
+    <file>icon/return.png</file>
+  </qresource>
+  <qresource prefix="logo">
+    <file>Renamer.ico</file>
+  </qresource>
+</RCC>

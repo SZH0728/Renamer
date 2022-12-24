@@ -1,16 +1,20 @@
 # -*- coding:utf-8 -*-
 # AUTHOR: SUN
 
-from main_window import Ui_Form
-from PyQt5 import QtWidgets, QtCore
-from filelist import FileList
 from os import listdir, walk
 from os.path import isdir, join, split
-from Wapi import *
 from re import match
 
+from PyQt5 import QtWidgets, QtCore
+
+from Wapi import single
+from filelist import FileList
+from function import config
+from main_window import Ui_Form
 
 __verson__ = '1.1.0Beta'
+
+# pyinstaller -D -w -i Renamer.ico main.py
 
 
 class main(Ui_Form, QtWidgets.QMainWindow):
@@ -18,6 +22,7 @@ class main(Ui_Form, QtWidgets.QMainWindow):
         super(main, self).__init__()
         self.filelist = FileList()
         self.window = ''
+        self.functions = []
 
     def setupUi(self, form):
         super(main, self).setupUi(form)
@@ -46,6 +51,16 @@ class main(Ui_Form, QtWidgets.QMainWindow):
         self.pushButton_11.clicked.connect(self.rebound)
         self.pushButton_12.clicked.connect(self.rename)
         self.pushButton_13.clicked.connect(lambda: self.stackedWidget.setCurrentIndex(0))
+        self.comboBox.currentIndexChanged.connect(self.function_change)
+
+        for key, value in config.functions.items():
+            self.comboBox.addItem(key)
+            wight = QtWidgets.QWidget(self.stackedWidget_2)
+            wight.setObjectName(key)
+            value = value(self)
+            value.setupUi(wight)
+            self.functions.append(value)
+            self.stackedWidget_2.addWidget(wight)
 
     def adddir(self):
         self.filelist.save()
@@ -69,12 +84,14 @@ class main(Ui_Form, QtWidgets.QMainWindow):
             exist = set(exist)
             files = set(files)
             files = files.difference(exist)
+            files = list(files)
+            files.sort()
             for i in list(files):
                 if '$' in i:
                     continue
                 file = self.filelist.new(i)
                 item = QtWidgets.QListWidgetItem()
-                item.setText(file.name+file.suffix)
+                item.setText(file.name + file.suffix)
                 item.setToolTip(file.origin)
                 item.setWhatsThis(file.id)
                 self.listWidget.addItem(item)
@@ -122,10 +139,10 @@ class main(Ui_Form, QtWidgets.QMainWindow):
             for i in li:
                 item = self.listWidget.item(i)
                 if item.isSelected():
-                    if i == num-1:
+                    if i == num - 1:
                         raise IndexError
                     self.listWidget.takeItem(i)
-                    self.listWidget.insertItem(i+1, item)
+                    self.listWidget.insertItem(i + 1, item)
                     self.listWidget.setCurrentItem(item)
         except IndexError:
             QtWidgets.QMessageBox.critical(self, '错误', '已经到底了！')
@@ -134,10 +151,10 @@ class main(Ui_Form, QtWidgets.QMainWindow):
         self.filelist.save()
         num = 0
         for i in range(self.listWidget.count()):
-            item = self.listWidget.item(i-num)
+            item = self.listWidget.item(i - num)
             if item.isSelected():
                 self.filelist.delete(item.whatsThis())
-                self.listWidget.takeItem(i-num)
+                self.listWidget.takeItem(i - num)
                 num += 1
 
     def clear(self):
@@ -193,7 +210,7 @@ class main(Ui_Form, QtWidgets.QMainWindow):
         self.filelist.rollback()
         for i in self.filelist.Id_Item.values():
             item = QtWidgets.QListWidgetItem()
-            item.setText(i.name+i.suffix)
+            item.setText(i.name + i.suffix)
             item.setToolTip(i.origin)
             item.setWhatsThis(i.id)
             self.listWidget.addItem(item)
@@ -203,7 +220,7 @@ class main(Ui_Form, QtWidgets.QMainWindow):
         self.tableWidget.setRowCount(len(self.filelist.Id_Item))
         for index, i in enumerate(list(self.filelist.Id_Item.values())):
             text1 = i.path
-            text2 = i.name+i.suffix
+            text2 = i.name + i.suffix
             text3 = split(i.origin)[1]
             if '\\' in text1:
                 text1 = text1.replace('\\', '/')
@@ -211,10 +228,10 @@ class main(Ui_Form, QtWidgets.QMainWindow):
                 text1 = text1.replace('//', '/')
             item1 = QtWidgets.QTableWidgetItem(text1)
             item1.setToolTip(text1)
-            item2 = QtWidgets.QTableWidgetItem(text2)
-            item2.setToolTip(text2)
-            item3 = QtWidgets.QTableWidgetItem(text3)
-            item3.setToolTip(text3)
+            item2 = QtWidgets.QTableWidgetItem(text3)
+            item2.setToolTip(text3)
+            item3 = QtWidgets.QTableWidgetItem(text2)
+            item3.setToolTip(text2)
             self.tableWidget.setItem(index, 0, item1)
             self.tableWidget.setItem(index, 1, item2)
             self.tableWidget.setItem(index, 2, item3)
@@ -241,7 +258,7 @@ class main(Ui_Form, QtWidgets.QMainWindow):
             elif type_ == 1:
                 text = file.suffix
             elif type_ == 2:
-                text = file.name+file.suffix
+                text = file.name + file.suffix
             if re:
                 if match(way, text) is None:
                     item.setHidden(True)
@@ -250,16 +267,16 @@ class main(Ui_Form, QtWidgets.QMainWindow):
                     item.setHidden(True)
 
     def rename(self):
-        try:
-            self.filelist.rename()
-        except BaseException as e:
-            QtWidgets.QMessageBox.critical(self, '错误', '无法重命名，因为\n'+str(e))
-        else:
-            QtWidgets.QMessageBox.information(self, '成功', '重命名成功！')
+        self.filelist.rename()
+        self.stackedWidget.setCurrentIndex(0)
+
+    def function_change(self):
+        self.stackedWidget_2.setCurrentIndex(self.comboBox.currentIndex())
 
 
 if __name__ == '__main__':
     import sys
+
     app = QtWidgets.QApplication(sys.argv)
     ui = main()
     ui.setupUi(ui)
