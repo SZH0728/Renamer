@@ -24,6 +24,3 @@ GitHub：
 
 百度网盘：  
 [https://pan.baidu.com/s/14iuptIf66lSld1YycU9VjQ?pwd=i441](https://pan.baidu.com/s/14iuptIf66lSld1YycU9VjQ?pwd=i441)
-
-### 写在最后
-**如果喜欢就点一下`Star`吧**
