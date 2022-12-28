@@ -5,14 +5,14 @@ from os import listdir, walk
 from os.path import isdir, join, split
 from re import match
 
-from PyQt5 import QtWidgets, QtCore
+from PyQt5 import QtCore, QtGui, QtWidgets
 
 from Wapi import single
-from filelist import FileList
+from filelist import FileList, ini
 from function import config
 from main_window import Ui_Form
 
-__verson__ = '1.1.0Beta'
+__verson__ = '1.1.1'
 
 # pyinstaller -D -w -i Renamer.ico main.py
 
@@ -23,6 +23,11 @@ class main(Ui_Form, QtWidgets.QMainWindow):
         self.filelist = FileList()
         self.window = ''
         self.functions = []
+        self.config = ini()
+
+    def closeEvent(self, a0: QtGui.QCloseEvent):
+        self.config.config.write()
+        self.close()
 
     def setupUi(self, form):
         super(main, self).setupUi(form)
@@ -280,5 +285,6 @@ if __name__ == '__main__':
     app = QtWidgets.QApplication(sys.argv)
     ui = main()
     ui.setupUi(ui)
+    ui.setWindowFlags(QtCore.Qt.MSWindowsFixedSizeDialogHint)
     ui.show()
     sys.exit(app.exec_())

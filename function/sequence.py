@@ -3,13 +3,13 @@
 from re import findall
 
 from function.sequence_window import Ui_Form
-from main import main as rename
 
 
 class main(Ui_Form):
-    def __init__(self, renamer: rename):
+    def __init__(self, renamer):
         super(main, self).__init__()
         self.main = renamer
+        self.config = self.main.config.read('sequence')
 
     def setupUi(self, form):
         super(main, self).setupUi(form)
@@ -20,6 +20,16 @@ class main(Ui_Form):
 auto: 自动补全(也可以使用数字)
 #: 补全的字符
 auto(#)不填写意味着不使用补全""")
+
+        self.comboBox.currentIndexChanged.connect(self.range_change)
+        self.comboBox_2.currentIndexChanged.connect(self.sequence_change)
+        self.comboBox_3.currentIndexChanged.connect(self.type_change)
+        self.textEdit.textChanged.connect(self.words_change)
+
+        self.comboBox.setCurrentIndex(int(self.config['range']))
+        self.comboBox_2.setCurrentIndex(int(self.config['sequence']))
+        self.comboBox_3.setCurrentIndex(int(self.config['type']))
+        self.textEdit.setText(self.config['words'])
 
     def rename(self):
         self.main.filelist.save()
@@ -94,6 +104,18 @@ auto(#)不填写意味着不使用补全""")
                         file_name = file_name.replace('{%s(%s)|index}' % (i[0], i[1]), number)
                 item.setText(file_name+file.suffix)
                 file.name = file_name
+
+    def range_change(self):
+        self.config['range'] = self.comboBox.currentIndex()
+
+    def sequence_change(self):
+        self.config['sequence'] = self.comboBox_2.currentIndex()
+
+    def type_change(self):
+        self.config['type'] = self.comboBox_3.currentIndex()
+
+    def words_change(self):
+        self.config['words'] = self.textEdit.toPlainText()
 
 
 if __name__ == '__main__':

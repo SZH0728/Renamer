@@ -3,7 +3,7 @@
 from os import rename
 from os.path import join
 
-from PyQt5 import QtWidgets, QtCore
+from PyQt5 import QtCore, QtWidgets
 
 from Wapi.process_window import Ui_Form
 
@@ -14,6 +14,7 @@ class main(Ui_Form, QtWidgets.QDialog):
         self.renamer = thread(filelist)
         self.renamer.rate.connect(self.rate_change)
         self.setupUi(self)
+        self.setWindowFlags(QtCore.Qt.MSWindowsFixedSizeDialogHint)
         self.renamer.start()
 
     def setupUi(self, form):
@@ -24,13 +25,12 @@ class main(Ui_Form, QtWidgets.QDialog):
         self.progressBar.setValue(rate[0])
         self.label.setText(self.label.text() + rate[2])
         if len(rate[1]) != 0:
-            text = self.textEdit.toPlainText()
-            text += '\n'.join(rate[1])
-            text += '\n'
-            self.textEdit.setText(text)
+            self.textEdit.append('\n'.join(rate[1]))
         if rate[0] == 100:
             self.label.setText('重命名完成！')
             self.pushButton.setText('确认')
+            if self.textEdit.toPlainText() == '':
+                self.textEdit.setText('没有出现任何异常')
 
     def cancel(self):
         if self.pushButton.text() == '取消':

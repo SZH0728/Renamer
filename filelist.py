@@ -1,9 +1,12 @@
 # -*- coding:utf-8 -*-
 # AUTHOR: SUN
 from copy import copy
-from os.path import split
+from os.path import exists, split
+
+from configobj import ConfigObj
 
 from Wapi.process import main
+from function import config
 
 
 class FileId(object):
@@ -67,6 +70,28 @@ class FileList(object):
 
     def clear(self):
         self.Id_Item.clear()
+
+
+class ini(object):
+    def __init__(self):
+        self.config = ConfigObj(r'./config.ini', encoding='UTF8')
+        if not exists(r'./config.ini'):
+            self.config['general'] = {
+                'verson': '1.1.1',
+                'updata': {
+                    'updata': True,
+                    'ignore': []
+                }
+            }
+            for key, value in config.config_init.items():
+                self.config[key] = value
+            self.config.write()
+
+    def updata(self, name, con):
+        self.config[name] = con
+
+    def read(self, name):
+        return self.config[name]
 
 
 if __name__ == '__main__':

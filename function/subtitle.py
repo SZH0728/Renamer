@@ -3,19 +3,25 @@
 from os.path import split
 
 from function.subtitle_window import Ui_Form
-from main import main as rename
 
 
 class main(Ui_Form):
-    def __init__(self, renamer: rename):
+    def __init__(self, renamer):
         super(main, self).__init__()
         self.main = renamer
+        self.config = self.main.config.read('subtitle')
 
     def setupUi(self, form):
         super(main, self).setupUi(form)
-        self.textEdit.setText('.mp4|.mkv|.avi|.webm')
-        self.textEdit_2.setText('.ass')
         self.pushButton.clicked.connect(self.renamer)
+
+        self.textEdit.textChanged.connect(self.video_change)
+        self.textEdit_2.textChanged.connect(self.subtitle_change)
+        self.comboBox.currentIndexChanged.connect(self.way_change)
+
+        self.textEdit.setText(self.config['video'])
+        self.textEdit_2.setText(self.config['subtitle'])
+        self.comboBox.setCurrentIndex(int(self.config['way']))
 
     def renamer(self):
         video_suffix = self.textEdit.toPlainText().split('|')
@@ -62,6 +68,15 @@ class main(Ui_Form):
                     if name in key:
                         value.name = value.name.replace(name, i.name)
                         id_item[value.id].setText(value.name+value.suffix)
+
+    def video_change(self):
+        self.config['video'] = self.textEdit.toPlainText()
+
+    def subtitle_change(self):
+        self.config['subtitle'] = self.textEdit_2.toPlainText()
+
+    def way_change(self):
+        self.config['way'] = self.comboBox.currentIndex()
 
 
 if __name__ == '__main__':

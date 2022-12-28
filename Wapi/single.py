@@ -1,16 +1,17 @@
 # -*- coding:utf-8 -*-
 # AUTHOR: SUN
+from PyQt5 import QtCore, QtWidgets
+
 from Wapi.single_window import Ui_Form
-from PyQt5 import QtWidgets, QtCore
-from filelist import FileListItem
 
 
 class main(Ui_Form, QtWidgets.QMainWindow):
     name = QtCore.pyqtSignal(object)
 
-    def __init__(self, item: FileListItem, wightitem: QtWidgets.QListWidgetItem):
+    def __init__(self, item, wightitem: QtWidgets.QListWidgetItem):
         super(main, self).__init__()
         self.setupUi(self)
+        self.setWindowFlags(QtCore.Qt.MSWindowsFixedSizeDialogHint)
         self.item = item
         self.wightitem = wightitem
         self.textEdit.setText(item.name)

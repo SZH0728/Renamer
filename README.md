@@ -8,11 +8,9 @@ exe文件获取方式在最后
 
 ### 更新
 - 新增：  
-  - 新的 GUI界面  
-  - 新的 功能  
-  - 新的 算法  
+  - 自动保存方法的修改内容  
 - 修复：  
-  - 按序命名时后缀不显示  
+  - 优化部分UI  
 
 
 ### 软件截图
@@ -20,7 +18,10 @@ exe文件获取方式在最后
 
 ### 获取方式
 GitHub：  
-[https://github.com/zhehao0728/Renamer/releases/tag/v1.1.0](https://github.com/zhehao0728/Renamer/releases/tag/v1.1.0)  
+[https://github.com/zhehao0728/Renamer/releases/tag/v1.1.1](https://github.com/zhehao0728/Renamer/releases/tag/v1.1.1)  
 
 百度网盘：  
-[https://pan.baidu.com/s/14iuptIf66lSld1YycU9VjQ?pwd=i441](https://pan.baidu.com/s/14iuptIf66lSld1YycU9VjQ?pwd=i441)
+[https://pan.baidu.com/s/1_tH1GdtMcryzffI8QR5EJQ?pwd=pj6r](https://pan.baidu.com/s/1_tH1GdtMcryzffI8QR5EJQ?pwd=pj6r)
+
+### 写在最后
+**如果喜欢就点一下`Star`吧**
