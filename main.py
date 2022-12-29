@@ -42,7 +42,8 @@ class main(Ui_Form, QtWidgets.QMainWindow):
         self.tableWidget.setHorizontalHeaderLabels(['路径', '原名称', '目标名称'])
         self.tableWidget.horizontalHeader().setSectionResizeMode(QtWidgets.QHeaderView.Stretch)
         self.lineEdit.setPlaceholderText('文件位置会出现在这里')
-        self.lineEdit.setFocusPolicy(QtCore.Qt.NoFocus)
+        self.lineEdit.textChanged.connect(self.item_click)
+        self.lineEdit_2.textChanged.connect(self.context_change)
         self.pushButton.clicked.connect(self.confirm)
         self.pushButton_2.clicked.connect(self.roll_back)
         self.pushButton_3.clicked.connect(self.adddir)
@@ -57,6 +58,14 @@ class main(Ui_Form, QtWidgets.QMainWindow):
         self.pushButton_12.clicked.connect(self.rename)
         self.pushButton_13.clicked.connect(lambda: self.stackedWidget.setCurrentIndex(0))
         self.comboBox.currentIndexChanged.connect(self.function_change)
+        self.comboBox_2.currentIndexChanged.connect(self.way_change)
+        self.checkBox_2.clicked.connect(self.re_change)
+        self.checkBox_3.clicked.connect(self.save_change)
+
+        self.comboBox_2.setCurrentIndex(int(self.config.config['general']['filtrate']['way']))
+        self.checkBox_2.setChecked(bool(self.config.config['general']['filtrate']['re']))
+        self.checkBox_3.setChecked(bool(self.config.config['general']['filtrate']['save']))
+        self.lineEdit_2.setText(self.config.config['general']['filtrate']['context'])
 
         for key, value in config.functions.items():
             self.comboBox.addItem(key)
@@ -180,10 +189,8 @@ class main(Ui_Form, QtWidgets.QMainWindow):
         item = self.listWidget.currentItem()
         if item is not None:
             text = self.filelist.Id_Origin[item.whatsThis()]
-            if '\\' in text:
-                text = text.replace('\\', '/')
-            if '//' in text:
-                text = text.replace('//', '/')
+            text = text.replace('\\', '/')
+            text = text.replace('//', '/')
             self.lineEdit.setText(text)
 
     def present_origin(self, origin=False):
@@ -277,6 +284,24 @@ class main(Ui_Form, QtWidgets.QMainWindow):
 
     def function_change(self):
         self.stackedWidget_2.setCurrentIndex(self.comboBox.currentIndex())
+
+    def way_change(self):
+        self.config.config['general']['filtrate']['way'] = self.comboBox_2.currentIndex()
+
+    def re_change(self):
+        if self.checkBox_2.isChecked():
+            self.config.config['general']['filtrate']['re'] = '1'
+        else:
+            self.config.config['general']['filtrate']['re'] = ''
+
+    def save_change(self):
+        if self.checkBox_3.isChecked():
+            self.config.config['general']['filtrate']['save'] = '1'
+        else:
+            self.config.config['general']['filtrate']['save'] = ''
+
+    def context_change(self):
+        self.config.config['general']['filtrate']['context'] = self.lineEdit_2.text()
 
 
 if __name__ == '__main__':

@@ -81,6 +81,12 @@ class ini(object):
                 'updata': {
                     'updata': True,
                     'ignore': []
+                },
+                'filtrate': {
+                    'way': 0,
+                    're': '',
+                    'save': '',
+                    'context': ''
                 }
             }
             for key, value in config.config_init.items():

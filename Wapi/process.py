@@ -25,7 +25,12 @@ class main(Ui_Form, QtWidgets.QDialog):
         self.progressBar.setValue(rate[0])
         self.label.setText(self.label.text() + rate[2])
         if len(rate[1]) != 0:
-            self.textEdit.append('\n'.join(rate[1]))
+            a = []
+            for i in rate[1]:
+                i = i.replace('\\', '/')
+                i = i.replace('//', '/')
+                a.append(i)
+            self.textEdit.append('\n'.join(a))
         if rate[0] == 100:
             self.label.setText('重命名完成！')
             self.pushButton.setText('确认')

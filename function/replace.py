@@ -1,6 +1,5 @@
 # -*- coding:utf-8 -*-
 # AUTHOR: SUN
-from distutils.util import strtobool
 from re import sub
 
 from function.replace_window import Ui_Form
@@ -25,9 +24,8 @@ class main(Ui_Form):
         self.textEdit.setText(self.config['replace']['key'])
         self.textEdit_2.setText(self.config['replace']['to'])
         self.textEdit_3.setText(self.config['delete']['key'])
-        self.checkBox.setChecked(strtobool(self.config['replace']['re']))
-        self.checkBox_2.setChecked(strtobool(self.config['delete']['re']))
-        print(bool(self.config['replace']['re']), bool(self.config['delete']['re']))
+        self.checkBox.setChecked(bool(self.config['replace']['re']))
+        self.checkBox_2.setChecked(bool(self.config['delete']['re']))
 
     def replace(self):
         self.main.filelist.save()
@@ -119,13 +117,19 @@ class main(Ui_Form):
         self.config['replace']['to'] = self.textEdit_2.toPlainText()
 
     def replace_re(self):
-        self.config['replace']['re'] = self.checkBox.isChecked()
+        if self.checkBox.isChecked():
+            self.config['replace']['re'] = '1'
+        else:
+            self.config['replace']['re'] = ''
 
     def delete_key(self):
         self.config['delete']['key'] = self.textEdit_3.toPlainText()
 
     def delete_re(self):
-        self.config['delete']['re'] = self.checkBox_2.isChecked()
+        if self.checkBox_2.isChecked():
+            self.config['delete']['re'] = '1'
+        else:
+            self.config['delete']['re'] = ''
 
 
 if __name__ == '__main__':

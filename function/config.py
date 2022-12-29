@@ -14,12 +14,12 @@ config_init = {
         'replace': {
             'key': '',
             'to': '',
-            're': True
+            're': ''
         },
 
         'delete': {
             'key': '',
-            're': True
+            're': ''
         }
     },
 
@@ -37,7 +37,7 @@ config_init = {
 
     'subtitle': {
         'video': '.mp4|.mkv|.avi|.webm',
-        'subtitle': '.ass',
+        'subtitle': '.ass|.srt|.smi|.ssa|.sub|.idx',
         'way': 0
     }
 }
