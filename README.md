@@ -18,10 +18,10 @@ exe文件获取方式在最后
 
 ### 获取方式
 GitHub：  
-[https://github.com/zhehao0728/Renamer/releases/tag/v1.1.1](https://github.com/zhehao0728/Renamer/releases/tag/v1.1.1)  
+[https://github.com/zhehao0728/Renamer/releases/tag/v1.1.2](https://github.com/zhehao0728/Renamer/releases/tag/v1.1.2)  
 
 百度网盘：  
-[https://pan.baidu.com/s/1_tH1GdtMcryzffI8QR5EJQ?pwd=pj6r](https://pan.baidu.com/s/1_tH1GdtMcryzffI8QR5EJQ?pwd=pj6r)
+[https://pan.baidu.com/s/1NNtrMssIct0jphKRBkgRhQ?pwd=u56s](https://pan.baidu.com/s/1NNtrMssIct0jphKRBkgRhQ?pwd=u56s)
 
 ### 写在最后
 **如果喜欢就点一下`Star`吧**
