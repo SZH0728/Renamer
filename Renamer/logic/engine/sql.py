@@ -16,7 +16,7 @@ class Sqlite(Base):
         self.cursor = self.connect.cursor()
 
         self.cursor.execute('''
-        CREATE TABLE IF NOT EXISTS files 
+        CREATE TABLE IF NOT EXISTS files ( 
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                 current_path TEXT NOT NULL,
                 current_name TEXT NOT NULL,
@@ -24,6 +24,7 @@ class Sqlite(Base):
                 target_name TEXT NOT NULL
                 );
         ''')
+        self.connect.commit()
 
     def __del__(self):
         self.cursor.close()
@@ -34,6 +35,7 @@ class Sqlite(Base):
             'INSERT INTO files (current_path, current_name, target_path, target_name) VALUES (?, ?, ?, ?);',
             (file.current_path, file.current_name, file.target_path, file.target_name)
         )
+        self.connect.commit()
         return File(**self.cursor.execute('SELECT * FROM files WHERE id = ?;', (self.cursor.lastrowid,)).fetchone())
 
     def select(self, path: str = None, name: str = None, id_: int = None,
@@ -52,7 +54,8 @@ class Sqlite(Base):
             sql += f'{f"current_{key}" if current else f"target_{key}"} = "{value}" AND '
         sql = f'SELECT * FROM files WHERE {sql[:-4]} {f"LIMIT {limit}" if limit else ""};'
 
-        result = self.cursor.execute(sql)
+        self.cursor.execute(sql)
+        result = self.cursor.fetchall()
         return [File(**row) for row in result]
 
     def update(self, file: File) -> File:
@@ -60,6 +63,7 @@ class Sqlite(Base):
             'UPDATE files SET current_path = ?, current_name = ?, target_path = ?, target_name = ? WHERE id = ?;',
             (file.current_path, file.current_name, file.target_path, file.target_name, file.id)
         )
+        self.connect.commit()
         return File(**self.cursor.execute('SELECT * FROM files WHERE id = ?;', (file.id,)).fetchone())
 
 
