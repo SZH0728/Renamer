@@ -1,7 +1,7 @@
 # -*- coding:utf-8 -*-
 # AUTHOR: Sun
 
-from typing import Callable
+from typing import Callable, Any
 from queue import Queue, Full, Empty
 from random import random
 from time import sleep
@@ -36,7 +36,7 @@ class Message(object):
     # Message content
     # 消息内容
     path: str
-    content: str
+    content: Any
 
     def is_from_ui(self) -> bool:
         """
@@ -282,9 +282,9 @@ class Server(object):
             logger.error(f'token {token} not found, message {message} is dropped')
             return False
 
-        # If the sender and receiver are the same client, send the message directly
-        # 如果发送者和接收者是同一个客户端，则直接发送消息
         if message.is_same_sender_and_receiver():
+            # If the sender and receiver are the same client, send the message directly
+            # 如果发送者和接收者是同一个客户端，则直接发送消息
             channel = self._get_channel(token)
         else:
             # If the sender and receiver are different clients, send the message to the other client's channel
@@ -292,7 +292,7 @@ class Server(object):
             channel = self._get_another_channel(token)
 
         try:
-            channel.put(message)
+            channel.put_nowait(message)
         except Full:
             logger.error(f'put message {message} to channel {channel} failed: channel is full')
             return False
@@ -315,10 +315,10 @@ class Server(object):
             logger.error(f'token {token} not found')
             return None
 
-        channel = self._get_another_channel(token)
+        channel = self._get_channel(token)
 
         try:
-            message = channel.get()
+            message = channel.get_nowait()
         except Empty:
             logger.error(f'get message from channel {channel} failed: channel is empty')
             return None
