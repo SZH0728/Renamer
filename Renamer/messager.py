@@ -1,13 +1,105 @@
 # -*- coding:utf-8 -*-
 # AUTHOR: Sun
 
-from typing import Any, Callable
+from typing import Callable
 from queue import Queue, Full, Empty
 from random import random
 from time import sleep
+from dataclasses import dataclass
+from enum import Enum
 from logging import getLogger
 
 logger = getLogger(__name__)
+
+
+class MessageUser(Enum):
+    # User Interface as sender or receiver
+    # 用户界面作为发送者或接收者
+    UI = 1
+
+    # Engine as sender or receiver
+    # 引擎作为发送者或接收者
+    ENGINE = 2
+
+
+@dataclass
+class Message(object):
+    """
+    Represents a message sent between clients.
+    表示客户端之间发送的消息。
+    """
+    # Sender and receiver of the message
+    # 消息的发送者和接收者
+    sender: MessageUser
+    receiver: MessageUser
+
+    # Message content
+    # 消息内容
+    path: str
+    content: str
+
+    def is_from_ui(self) -> bool:
+        """
+        Returns True if the message is from the UI, False otherwise.
+        如果消息来自UI则返回True，否则返回False。
+        """
+        return self.sender == MessageUser.UI
+
+    def is_from_engine(self) -> bool:
+        """
+        Returns True if the message is from the engine, False otherwise.
+        如果消息来自引擎则返回True，否则返回False。
+        """
+        return self.sender == MessageUser.ENGINE
+
+    def is_to_ui(self) -> bool:
+        """
+        Returns True if the message is to the UI, False otherwise.
+        如果消息的目标是UI则返回True，否则返回False。
+        """
+        return self.receiver == MessageUser.UI
+
+    def is_to_engine(self) -> bool:
+        """
+        Returns True if the message is to the engine, False otherwise.
+        如果消息的目标是引擎则返回True，否则返回False。
+        """
+        return self.receiver == MessageUser.ENGINE
+
+    def is_ui_to_engine(self) -> bool:
+        """
+        Return True if the message is from the UI and to the engine, False otherwise.
+        如果消息来自UI且发送到引擎则返回True，否则返回False。
+        """
+        return self.is_from_ui() and self.is_to_engine()
+
+    def is_engine_to_ui(self) -> bool:
+        """
+        Returns True if the message is from the engine and to the UI, False otherwise.
+        如果消息来自引擎且发送到UI则返回True，否则返回False。
+        """
+        return self.is_from_engine() and self.is_to_ui()
+
+    def is_ui_to_ui(self) -> bool:
+        """
+        Return True if the message is from the UI and to the UI, False otherwise.
+        如果消息来自UI且发送到UI则返回True，否则返回False。
+        """
+        return self.is_from_ui() and self.is_to_ui()
+
+    def is_engine_to_engine(self) -> bool:
+        """
+        Returns True if the message is from the engine and to the engine, False otherwise.
+        如果消息来自引擎且发送到引擎则返回True，否则返回False。
+        """
+        return self.is_from_engine() and self.is_to_engine()
+
+    def is_same_sender_and_receiver(self) -> bool:
+        """
+        Return True if the sender and receiver are the same, False otherwise.
+        如果发送者和接收者是相同的则返回True，否则返回False。
+        """
+        return self.sender == self.receiver
 
 
 class Client(object):
@@ -28,7 +120,7 @@ class Client(object):
         self._server = server
         self._token = token
 
-    def send(self, message: Any):
+    def send(self, message: Message):
         """
         Sends a message to the server.
         向服务器发送一条消息。
@@ -40,7 +132,7 @@ class Client(object):
         """
         return self._server.send(message, self._token)
 
-    def read(self):
+    def read(self) -> Message | None:
         """
         Reads a message from the server.
         从服务器读取一条消息。
@@ -70,7 +162,7 @@ class Client(object):
         """
         return self._server.is_full(self._token)
 
-    def wait_for_message(self, max_wait_time: int = None, stop_flag: Callable = None) -> Any | None:
+    def wait_for_message(self, max_wait_time: int = None, stop_flag: Callable = None) -> Message | None:
         """
         Waits for a message to arrive.
         等待一条消息到达。
@@ -113,7 +205,7 @@ class Server(object):
         """
         # Create two random tokens and associate them with two queues.
         # 创建两个随机令牌，并将它们与两个队列关联起来。
-        self._channel = {
+        self._channel: dict[float, Queue[Message]] = {
             random(): Queue(),
             random(): Queue(),
         }
@@ -122,7 +214,7 @@ class Server(object):
         # 为每个通道创建客户端对象。
         self._client = tuple(Client(self, key) for key in self._channel.keys())
 
-    def get_client(self) -> tuple[Client]:
+    def get_client(self) -> tuple[Client, ...]:
         """
         Returns all client objects associated with this server.
         返回所有与该服务器关联的客户端对象。
@@ -153,7 +245,25 @@ class Server(object):
                 logger.debug(f'found another channel: {key}')
                 return value
 
-    def send(self, message: Any, token: float) -> bool:
+        logger.error(f'no other channel found for token {token}')
+        return None
+
+    def _get_channel(self, token) -> Queue | None:
+        """
+        Gets the channel associated with the given token.
+        获取与给定令牌相关联的通道。
+
+        :param token: The token identifying the sender's channel.
+                      标识发送者通道的令牌。
+        :return: The channel associated with the given token or None if the token is invalid.
+                 与给定令牌相关联的通道或如果令牌无效则返回None。
+        """
+        if token not in self._channel:
+            logger.error(f'token {token} not found')
+            return None
+        return self._channel[token]
+
+    def send(self, message: Message, token: float) -> bool:
         """
         Sends a message to the channel associated with the given token.
         将一条消息发送到与给定令牌相关的通道。
@@ -172,7 +282,14 @@ class Server(object):
             logger.error(f'token {token} not found, message {message} is dropped')
             return False
 
-        channel = self._get_another_channel(token)
+        # If the sender and receiver are the same client, send the message directly
+        # 如果发送者和接收者是同一个客户端，则直接发送消息
+        if message.is_same_sender_and_receiver():
+            channel = self._get_channel(token)
+        else:
+            # If the sender and receiver are different clients, send the message to the other client's channel
+            # 如果发送者和接收者是不同的客户端，则将消息发送到另一个客户端的通道
+            channel = self._get_another_channel(token)
 
         try:
             channel.put(message)
@@ -182,7 +299,7 @@ class Server(object):
         else:
             return True
 
-    def get(self, token: float) -> Any:
+    def get(self, token: float) -> Message | None:
         """
         Retrieves a message from the channel associated with the given token.
         从与给定令牌相关的通道中获取一条消息。
